@@ -429,9 +429,9 @@ val EmployerDashboard = FC<AppProps> { props ->
                                 tr {
                                     td {
                                         colSpan = 5
-                                        style = js {
+                                        style = "center"/*js {
                                             textAlign = "center"
-                                        }
+                                        }*/
                                         +"No verification history yet"
                                     }
                                 }
