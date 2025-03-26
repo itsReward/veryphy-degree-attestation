@@ -155,7 +155,7 @@ val Alert = FC<AlertProps> { props ->
     }
 }
 
-// Layout Components
+/*// Layout Components
 interface DashboardLayoutProps : Props {
     var title: String
     var children: ReactNode
@@ -288,7 +288,7 @@ val Sidebar = FC<SidebarProps> { props ->
             }
         }
     }
-}
+}*/
 
 // Table Components
 interface DataTableProps<T> : Props {

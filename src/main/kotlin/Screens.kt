@@ -31,8 +31,9 @@ interface AppProps : Props {
 
 
 // Extended LoginProps with callback
-interface LoginProps : AppProps {
+interface LoginProps : Props {
     var onLogin: (UserRole) -> Unit
+    var appState: AppState
 }
 
 // Updated LoginScreen with proper props

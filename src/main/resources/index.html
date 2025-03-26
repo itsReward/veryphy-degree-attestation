@@ -5,8 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veryphy: Degree Attestation</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Add the test script directly -->
+    <script src="veryphy-degree-attestation.js"></script>
 </head>
 <body>
-<div id="root"></div>
+<!-- Add a message that will be visible if JS doesn't load properly -->
+<noscript>
+    <div style="color: red; padding: 20px;">
+        JavaScript is disabled. Please enable it to run this application.
+    </div>
+</noscript>
+
+<!-- This is the root element where the React app will be mounted -->
+<div id="root">
+    <!-- Add a loading message that will be replaced when the app loads -->
+    <div style="text-align: center; padding: 40px; font-family: sans-serif;">
+        Loading application...
+    </div>
+</div>
+
+<!-- Add a debug element to help troubleshoot -->
+<div id="debug" style="position: fixed; bottom: 10px; left: 10px; padding: 10px; background-color: #ffffcc; border: 1px solid #ddddaa; font-family: monospace; z-index: 9999;">
+    Debug area: Waiting for JS...
+</div>
+
+<script>
+    // Inline script to test basic JavaScript functionality
+    document.getElementById('debug').innerText = 'Debug area: Inline script executed at ' + new Date().toLocaleTimeString();
+
+    // Listen for errors
+    window.addEventListener('error', function(event) {
+        document.getElementById('debug').innerHTML += '<br>ERROR: ' + event.message;
+    });
+</script>
+
+<!-- The Kotlin/JS compiler will automatically add its script tags here -->
 </body>
 </html>

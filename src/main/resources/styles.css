@@ -16,7 +16,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
     color: var(--dark-text);
     background-color: #fff;
 }
@@ -50,6 +50,7 @@ h1, h2, h3 {
 .role-btn {
     background-color: var(--primary-color);
     color: var(--light-text);
+    margin: 0 8px;
 }
 
 .role-btn:hover {
@@ -160,7 +161,7 @@ button:disabled {
 .dashboard-layout {
     display: flex;
     flex: 1;
-    height: 0;
+    height: calc(100vh - 64px);
 }
 
 .sidebar {
@@ -211,4 +212,109 @@ button:disabled {
 .data-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 16px;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background-color: var(--light-bg);
+    font-weight: bold;
+}
+
+.data-table tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Status indicators */
+.status-success {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.status-error {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+.status-pending {
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+/* Loading and error states */
+.loading-indicator {
+    padding: 16px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.error-message {
+    padding: 16px;
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--error-color);
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+/* Stats container */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    padding: 16px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .login-card {
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .dashboard-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* logo style */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.logo {
+    max-width: 240px;
+    height: auto;
 }

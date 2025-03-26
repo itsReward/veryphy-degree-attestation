@@ -23,7 +23,8 @@ kotlin {
                 }
                 devServer = devServer?.copy(
                     static = devServer?.static?.let { mutableListOf("$projectDir/src/main/resources") + it } as MutableList<String>?
-                        ?: mutableListOf("$projectDir/src/main/resources")
+                        ?: mutableListOf("$projectDir/src/main/resources"),
+                    open = true,  // Open browser automatically
                 )
             }
             testTask {
@@ -43,6 +44,10 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+                // Add CSS loader support
+                implementation(npm("style-loader", "3.3.1"))
+                implementation(npm("css-loader", "6.7.1"))
             }
         }
     }
