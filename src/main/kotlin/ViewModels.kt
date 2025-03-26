@@ -5,12 +5,9 @@ import js.typedarrays.Int8Array
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.w3c.dom.HTMLInputElement
 import org.w3c.files.File
 import org.w3c.files.FileReader
-import org.w3c.files.get
 import kotlin.coroutines.CoroutineContext
-import kotlin.js.Promise
 import kotlin.properties.Delegates
 
 // Base ViewModel class with coroutine support
@@ -68,7 +65,7 @@ class UniversityViewModel : ViewModel() {
     var studentName: String by Delegates.observable("") { _, _, _ -> }
     var degreeName: String by Delegates.observable("") { _, _, _ -> }
     var issueDate: String by Delegates.observable("") { _, _, _ -> }
-    var fileUpload: File? by Delegates.observable(null) { _, _, _ -> }
+    var fileUpload: web.file.File? by Delegates.observable(null) { _, _, _ -> }
 
     var degrees: List<Degree> by Delegates.observable(emptyList()) { _, _, _ -> }
 
@@ -82,7 +79,7 @@ class UniversityViewModel : ViewModel() {
                 universityId = universityId,
                 universityName = universityName,
                 issueDate = issueDate,
-                hashCode = "",  // Will be generated
+                degreeHash = "",  // Will be generated
                 status = DegreeStatus.PROCESSING
             )
 
@@ -110,7 +107,7 @@ class UniversityViewModel : ViewModel() {
         }
     }
 
-    fun handleFileUpload(inputElement: HTMLInputElement) {
+    fun handleFileUpload(inputElement: web.html.HTMLInputElement) {
         val files = inputElement.files
         if (files != null && files.length > 0) {
             fileUpload = files[0]
@@ -127,7 +124,7 @@ class UniversityViewModel : ViewModel() {
 }
 
 class EmployerViewModel : ViewModel() {
-    var certificateFile: File? by Delegates.observable(null) { _, _, _ -> }
+    var certificateFile: web.file.File? by Delegates.observable(null) { _, _, _ -> }
     var certificateBytes: ByteArray? by Delegates.observable(null) { _, _, _ -> }
     var currentVerification: VerificationRequest? by Delegates.observable(null) { _, _, _ -> }
     var verificationHistory: List<VerificationRequest> by Delegates.observable(emptyList()) { _, _, _ -> }
@@ -162,16 +159,16 @@ class EmployerViewModel : ViewModel() {
         }
     }
 
-    fun handleCertificateUpload(inputElement: HTMLInputElement) {
+    fun handleCertificateUpload(inputElement: web.html.HTMLInputElement) {
         val files = inputElement.files
         if (files != null && files.length > 0) {
             val file = files[0]
             certificateFile = file
 
             // Read file as binary data
-            val reader = FileReader()
-            reader.onload = {
-                val arrayBuffer = reader.result as ArrayBuffer
+            val reader = web.file.FileReader()
+            reader.onload = { event ->
+                val arrayBuffer = event.target?.result as js.buffer.ArrayBuffer
                 certificateBytes = arrayBuffer.toByteArray()
             }
             reader.readAsArrayBuffer(file)

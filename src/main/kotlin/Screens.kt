@@ -20,8 +20,6 @@ import react.dom.html.ReactHTML.td
 import react.dom.html.ReactHTML.br
 import react.dom.events.ChangeEvent
 import react.dom.events.FormEvent
-import react.dom.events.MouseEvent
-import org.w3c.dom.HTMLInputElement
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.MainScope
 import web.cssom.ClassName
@@ -78,10 +76,10 @@ val LoginScreen = FC<AppProps> { props ->
                     }
                     input {
                         id = "username"
-                        type = InputType("text")
+                        //type = InputType("text")
                         className = ClassName("form-control")
                         value = viewModel.username
-                        onChange = { e: ChangeEvent<HTMLInputElement> ->
+                        onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
                             viewModel.username = e.target.value
                         }
                     }
@@ -95,10 +93,10 @@ val LoginScreen = FC<AppProps> { props ->
                     }
                     input {
                         id = "password"
-                        type = "password"
+                        //type = "password"
                         className = ClassName("form-control")
                         value = viewModel.password
-                        onChange = { e: ChangeEvent<HTMLInputElement> ->
+                        onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
                             viewModel.password = e.target.value
                         }
                     }
@@ -110,7 +108,7 @@ val LoginScreen = FC<AppProps> { props ->
 
                     button {
                         className = ClassName("btn role-btn")
-                        onClick = { _: MouseEvent ->
+                        onClick = { _ ->
                             MainScope().launch {
                                 viewModel.login(UserRole.UNIVERSITY) {
                                     props.appState.currentRole = UserRole.UNIVERSITY
@@ -126,7 +124,7 @@ val LoginScreen = FC<AppProps> { props ->
 
                     button {
                         className = ClassName("btn role-btn")
-                        onClick = { _: MouseEvent ->
+                        onClick = { _ ->
                             MainScope().launch {
                                 viewModel.login(UserRole.EMPLOYER) {
                                     props.appState.currentRole = UserRole.EMPLOYER
@@ -142,7 +140,7 @@ val LoginScreen = FC<AppProps> { props ->
 
                     button {
                         className = ClassName("btn role-btn")
-                        onClick = { _: MouseEvent ->
+                        onClick = { _ ->
                             MainScope().launch {
                                 viewModel.login(UserRole.ADMIN) {
                                     props.appState.currentRole = UserRole.ADMIN
@@ -187,7 +185,7 @@ val UniversityDashboard = FC<AppProps> { props ->
 
                 viewModel.errorMessage?.let {
                     div {
-                        className = "error-message"
+                        className = ClassName("error-message")
                         +it
                     }
                 }
@@ -255,8 +253,8 @@ val UniversityDashboard = FC<AppProps> { props ->
                     }
 
                     button {
-                        className = "btn primary-btn"
-                        type = "submit"
+                        className = ClassName("btn primary-btn")
+                        asDynamic().type = "submit"
                         disabled = viewModel.isLoading
                         if (viewModel.isLoading) {
                             +"Processing..."
@@ -292,9 +290,7 @@ val UniversityDashboard = FC<AppProps> { props ->
                                 tr {
                                     td {
                                         colSpan = 5
-                                        style = js {
-                                            textAlign = "center"
-                                        }
+                                        asDynamic().style.textAlign = "center"
                                         +"No degrees registered yet"
                                     }
                                 }
@@ -375,7 +371,7 @@ val EmployerDashboard = FC<AppProps> { props ->
 
                     button {
                         className = ClassName("btn primary-btn")
-                        type = "submit"
+                        //type = "submit"
                         disabled = viewModel.isLoading || viewModel.certificateFile == null
                         if (viewModel.isLoading) {
                             +"Verifying..."
@@ -429,9 +425,7 @@ val EmployerDashboard = FC<AppProps> { props ->
                                 tr {
                                     td {
                                         colSpan = 5
-                                        style = "center"/*js {
-                                            textAlign = "center"
-                                        }*/
+                                        asDynamic().style.textAlign = "center"
                                         +"No verification history yet"
                                     }
                                 }
@@ -570,7 +564,7 @@ val AdminDashboard = FC<AppProps> { props ->
 
                     button {
                         className = ClassName("btn primary-btn")
-                        type = "submit"
+                        asDynamic().type = "submit"
                         disabled = viewModel.isLoading
                         if (viewModel.isLoading) {
                             +"Adding..."
@@ -606,9 +600,7 @@ val AdminDashboard = FC<AppProps> { props ->
                                 tr {
                                     td {
                                         colSpan = 5
-                                        style = "center" /*js {
-                                            textAlign = "center"
-                                        }*/
+                                        asDynamic().style.textAlign = "center"
                                         +"No universities registered yet"
                                     }
                                 }
@@ -632,7 +624,7 @@ val AdminDashboard = FC<AppProps> { props ->
                                             if (university.status != UniversityStatus.BLACKLISTED) {
                                                 button {
                                                     className = ClassName("btn action-btn")
-                                                    onClick = { _: MouseEvent ->
+                                                    onClick = { _ ->
                                                         MainScope().launch {
                                                             viewModel.blacklistUniversity(university.id) {
                                                                 // Show success notification

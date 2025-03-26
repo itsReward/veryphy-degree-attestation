@@ -39,7 +39,7 @@ class ApiService {
         return Result.success(
             degree.copy(
                 id = "deg-" + (1000..9999).random(),
-                hashCode = hashCode,
+                degreeHash = hashCode,
                 status = DegreeStatus.REGISTERED
             )
         )
@@ -58,7 +58,7 @@ class ApiService {
                 universityId = universityId,
                 universityName = "University of Technology",
                 issueDate = "2024-12-15",
-                hashCode = "0x1a2b3c4d",
+                degreeHash = "0x1a2b3c4d",
                 status = DegreeStatus.VERIFIED
             ),
             Degree(
@@ -69,7 +69,7 @@ class ApiService {
                 universityId = universityId,
                 universityName = "University of Technology",
                 issueDate = "2024-12-14",
-                hashCode = "0x5e6f7g8h",
+                degreeHash = "0x5e6f7g8h",
                 status = DegreeStatus.PROCESSING
             )
         )

@@ -21,6 +21,10 @@ kotlin {
                 cssSupport {
                     enabled.set(true)
                 }
+                devServer = devServer?.copy(
+                    static = devServer?.static?.let { mutableListOf("$projectDir/src/main/resources") + it } as MutableList<String>?
+                        ?: mutableListOf("$projectDir/src/main/resources")
+                )
             }
             testTask {
                 useKarma {

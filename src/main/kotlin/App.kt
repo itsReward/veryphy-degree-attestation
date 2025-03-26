@@ -6,8 +6,13 @@ import react.create
 import kotlinx.browser.document
 import kotlinx.browser.window
 import react.dom.client.createRoot
+import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.h1
 import web.dom.Element
-import web.cssom.ClassName
+
+@JsModule("./styles.css")
+@JsNonModule
+external val styles: dynamic
 
 enum class Screen {
     LOGIN,
@@ -45,6 +50,9 @@ val App = FC<Props> {
         }
     }
 }
+
+
+
 
 fun main() {
     window.onload = {

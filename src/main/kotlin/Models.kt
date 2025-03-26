@@ -43,7 +43,7 @@ data class Degree(
     val universityId: String,
     val universityName: String,
     val issueDate: String,
-    val hashCode: String,
+    val degreeHash: String,
     val status: DegreeStatus
 )
 

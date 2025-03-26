@@ -1,31 +1,24 @@
 package com.veryphy
 
+import web.html.HTMLInputElement
 import react.FC
 import react.Props
 import react.ReactNode
+import react.dom.events.ChangeEvent
+import react.dom.events.FormEvent
+import react.dom.html.ReactHTML.a
 import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.h1
-import react.dom.html.ReactHTML.h2
 import react.dom.html.ReactHTML.h3
 import react.dom.html.ReactHTML.header
 import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.label
-import react.dom.html.ReactHTML.p
-import react.dom.html.ReactHTML.span
-import react.dom.html.ReactHTML.table
-import react.dom.html.ReactHTML.tbody
-import react.dom.html.ReactHTML.td
-import react.dom.html.ReactHTML.th
-import react.dom.html.ReactHTML.thead
-import react.dom.html.ReactHTML.tr
-import react.dom.html.ReactHTML.ul
 import react.dom.html.ReactHTML.li
-import react.dom.html.ReactHTML.a
-import react.dom.events.ChangeEvent
-import react.dom.events.FormEvent
-import org.w3c.dom.HTMLInputElement
+import react.dom.html.ReactHTML.span
+import react.dom.html.ReactHTML.ul
 import web.cssom.ClassName
+import web.html.InputType
 
 // Common Components
 interface ButtonProps : Props {
@@ -101,7 +94,7 @@ val InputField = FC<InputFieldProps> { props ->
         }
         input {
             id = props.id
-            type = props.type
+            //type = InputType(props.type)
             value = props.value
             onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
                 props.onChange(e.target.value)
@@ -120,6 +113,7 @@ interface FileInputProps : Props {
     var accept: String?
 }
 
+// Modify your FileInput component to use the correct type path
 val FileInput = FC<FileInputProps> { props ->
     div {
         className = ClassName("form-group")
@@ -129,7 +123,8 @@ val FileInput = FC<FileInputProps> { props ->
         }
         input {
             id = props.id
-            type = "file"
+            //type = InputType("file")
+            // Use the fully qualified path for the event type
             onChange = { e: ChangeEvent<HTMLInputElement> ->
                 props.onChange(e.target)
             }
@@ -234,6 +229,7 @@ val Sidebar = FC<SidebarProps> { props ->
                     }
                 }
             }
+
             UserRole.EMPLOYER -> {
                 li {
                     a {
@@ -254,6 +250,7 @@ val Sidebar = FC<SidebarProps> { props ->
                     }
                 }
             }
+
             UserRole.ADMIN -> {
                 li {
                     a {
