@@ -1,72 +1,167 @@
-/*
 package com.veryphy
 
 import react.*
 import react.dom.client.createRoot
 import kotlinx.browser.document
+import kotlinx.browser.window
 import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.h1
 import react.dom.html.ReactHTML.p
-import react.dom.html.ReactHTML.button
 import web.dom.Element
+import web.cssom.ClassName
 
-*/
-/**
- * Minimal React App - stripped down to the absolute basics
- *//*
-
-val MinimalApp = FC<Props> {
-    val (count, setCount) = useState(0)
+// Simplified app with minimal dashboard screens
+/*
+val App = FC<Props> {
+    // Use state to track current screen 
+    val (currentScreen, setCurrentScreen) = useState("login")
 
     div {
-        h1 {
-            +"Hello from React!"
-        }
-        p {
-            +"Count: $count"
-        }
-        button {
-            onClick = { setCount(count + 1) }
-            +"Increment"
+        className = ClassName("app-container")
+
+        when (currentScreen) {
+            "login" -> {
+                div {
+                    className = ClassName("login-container")
+                    h1 { +"VeryPhy Degree Attestation System" }
+
+                    div {
+                        className = ClassName("login-card")
+                        h1 { +"Choose Role" }
+                        div {
+                            className = ClassName("role-selection")
+
+                            button {
+                                className = ClassName("btn role-btn")
+                                onClick = { setCurrentScreen("university") }
+                                +"University"
+                            }
+
+                            button {
+                                className = ClassName("btn role-btn")
+                                onClick = { setCurrentScreen("employer") }
+                                +"Employer"
+                            }
+
+                            button {
+                                className = ClassName("btn role-btn")
+                                onClick = { setCurrentScreen("admin") }
+                                +"Admin"
+                            }
+                        }
+                    }
+                }
+            }
+
+            "university" -> {
+                // Simplified university dashboard without using DashboardLayout
+                div {
+                    className = ClassName("dashboard-container")
+                    div {
+                        className = ClassName("header")
+                        h1 { +"University Dashboard" }
+                        button {
+                            className = ClassName("btn-logout")
+                            onClick = { setCurrentScreen("login") }
+                            +"Logout"
+                        }
+                    }
+
+                    div {
+                        className = ClassName("dashboard-content")
+                        h1 { +"Register New Degree" }
+                        p { +"Form will go here" }
+
+                        button {
+                            className = ClassName("btn primary-btn")
+                            +"Register Degree"
+                        }
+
+                        h1 { +"Registered Degrees" }
+                        p { +"List will go here" }
+                    }
+                }
+            }
+
+            "employer" -> {
+                // Simplified employer dashboard without using DashboardLayout
+                div {
+                    className = ClassName("dashboard-container")
+                    div {
+                        className = ClassName("header")
+                        h1 { +"Employer Dashboard" }
+                        button {
+                            className = ClassName("btn-logout")
+                            onClick = { setCurrentScreen("login") }
+                            +"Logout"
+                        }
+                    }
+
+                    div {
+                        className = ClassName("dashboard-content")
+                        h1 { +"Verify Degree Certificate" }
+                        p { +"Form will go here" }
+
+                        button {
+                            className = ClassName("btn primary-btn")
+                            +"Verify Certificate"
+                        }
+
+                        h1 { +"Verification History" }
+                        p { +"List will go here" }
+                    }
+                }
+            }
+
+            "admin" -> {
+                // Simplified admin dashboard without using DashboardLayout
+                div {
+                    className = ClassName("dashboard-container")
+                    div {
+                        className = ClassName("header")
+                        h1 { +"Admin Dashboard" }
+                        button {
+                            className = ClassName("btn-logout")
+                            onClick = { setCurrentScreen("login") }
+                            +"Logout"
+                        }
+                    }
+
+                    div {
+                        className = ClassName("dashboard-content")
+                        h1 { +"System Statistics" }
+                        p { +"Stats will go here" }
+
+                        h1 { +"Manage Universities" }
+                        p { +"List will go here" }
+
+                        button {
+                            className = ClassName("btn primary-btn")
+                            +"Add University"
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
 fun main() {
-    // We'll use a more basic approach to track execution
-    println("Starting application...")
-    document.addEventListener("DOMContentLoaded", {
-        println("DOM content loaded")
-
+    window.onload = {
         try {
-            // Add a visible message to the debug area
-            document.getElementById("debug")?.innerHTML = "JS main function running"
+            // Load CSS styles via JS as a fallback
+            StyleLoader.loadStyles()
 
-            val container = document.getElementById("root") as Element?
+            val container = document.getElementById("root") as? Element
             if (container != null) {
-                // Update debug element
-                document.getElementById("debug")?.innerHTML += "<br>Root element found"
-
-                try {
-                    // Create a React root and render the app
-                    createRoot(container).render(MinimalApp.create())
-                    document.getElementById("debug")?.innerHTML += "<br>React rendering complete"
-                } catch (e: Exception) {
-                    // Show any errors in the debug area
-                    val errorMsg = "React error: ${e.message}"
-                    println(errorMsg)
-                    document.getElementById("debug")?.innerHTML += "<br><span style='color:red'>$errorMsg</span>"
-                }
+                createRoot(container).render(App.create())
+                console.log("App rendered successfully")
             } else {
-                val errorMsg = "Root element not found!"
-                println(errorMsg)
-                document.getElementById("debug")?.innerHTML += "<br><span style='color:red'>$errorMsg</span>"
+                console.error("Couldn't find root element!")
             }
         } catch (e: Exception) {
-            // Catch any other errors
-            val errorMsg = "Error: ${e.message}"
-            println(errorMsg)
-            document.getElementById("debug")?.innerHTML += "<br><span style='color:red'>$errorMsg</span>"
+            console.error("Error during app initialization:", e)
         }
-    })
+    }
 }*/

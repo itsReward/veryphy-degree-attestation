@@ -12,9 +12,10 @@ import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.ul
 import react.dom.html.ReactHTML.li
 import react.dom.html.ReactHTML.a
+import react.dom.html.ReactHTML.img
 import web.cssom.ClassName
 
-// Define props interface for dashboard layout
+// Define props interface for dashboard layout with vars instead of vals
 interface DashboardLayoutProps : Props {
     var title: String
     var username: String
@@ -30,6 +31,14 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
 
         header {
             className = ClassName("header")
+            div {
+                className = ClassName("logo-container header-logo")
+                img {
+                    src = "veryphy_logo.svg"
+                    alt = "VeryPhy Logo"
+                    style = js("""{ height: '40px', filter: 'brightness(0) invert(1)' }""")
+                }
+            }
             h1 {
                 +props.title
             }
@@ -63,18 +72,18 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
 
             div {
                 className = ClassName("main-content")
-                // Render the children passed to this component
                 +props.children
             }
         }
     }
 }
 
-// Sidebar component
+// Sidebar component props
 interface SidebarProps : Props {
     var role: UserRole
 }
 
+// Sidebar component
 val Sidebar = FC<SidebarProps> { props ->
     ul {
         className = ClassName("nav-menu")
@@ -102,7 +111,7 @@ val Sidebar = FC<SidebarProps> { props ->
                 li {
                     a {
                         href = "#"
-                        +"Account"
+                        +"Account Settings"
                     }
                 }
             }
@@ -123,7 +132,7 @@ val Sidebar = FC<SidebarProps> { props ->
                 li {
                     a {
                         href = "#"
-                        +"Account"
+                        +"Account Settings"
                     }
                 }
             }
@@ -138,13 +147,13 @@ val Sidebar = FC<SidebarProps> { props ->
                 li {
                     a {
                         href = "#"
-                        +"Employers"
+                        +"System Statistics"
                     }
                 }
                 li {
                     a {
                         href = "#"
-                        +"System Stats"
+                        +"User Management"
                     }
                 }
                 li {
