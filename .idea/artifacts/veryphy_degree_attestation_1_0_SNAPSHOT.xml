@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="veryphy-degree-attestation-1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="veryphy-degree-attestation-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="veryphy-degree-attestation.main" />
+    </root>
+  </artifact>
+</component>
