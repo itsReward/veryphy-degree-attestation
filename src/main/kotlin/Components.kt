@@ -1,6 +1,5 @@
 package com.veryphy
 
-import web.html.HTMLInputElement
 import react.FC
 import react.Props
 import react.ReactNode
@@ -18,6 +17,7 @@ import react.dom.html.ReactHTML.li
 import react.dom.html.ReactHTML.span
 import react.dom.html.ReactHTML.ul
 import web.cssom.ClassName
+import web.html.HTMLInputElement
 import web.html.InputType
 
 // Common Components
@@ -75,7 +75,7 @@ val StatCard = FC<StatCardProps> { props ->
     }
 }
 
-interface InputFieldProps : Props {
+external interface InputFieldProps : Props {
     var id: String
     var label: String
     var type: String
@@ -94,7 +94,14 @@ val InputField = FC<InputFieldProps> { props ->
         }
         input {
             id = props.id
-            //type = InputType(props.type)
+            when (props.type) {
+                "text" -> type = InputType.text
+                "password" -> type = InputType.password
+                "email" -> type = InputType.email
+                "number" -> type = InputType.number
+                "date" -> type = InputType.date
+                else -> type = InputType.text
+            }
             value = props.value
             onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
                 props.onChange(e.target.value)
@@ -106,11 +113,12 @@ val InputField = FC<InputFieldProps> { props ->
     }
 }
 
-interface FileInputProps : Props {
+external interface FileInputProps : Props {
     var id: String
     var label: String
     var onChange: (HTMLInputElement) -> Unit
     var accept: String?
+    var required: Boolean?
 }
 
 // Modify your FileInput component to use the correct type path
@@ -123,11 +131,12 @@ val FileInput = FC<FileInputProps> { props ->
         }
         input {
             id = props.id
-            //type = InputType("file")
+            type = InputType.file
             // Use the fully qualified path for the event type
             onChange = { e: ChangeEvent<HTMLInputElement> ->
                 props.onChange(e.target)
             }
+            required = props.required ?: false
             accept = props.accept ?: ""
             className = ClassName("form-control")
         }

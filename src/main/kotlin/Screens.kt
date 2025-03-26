@@ -29,8 +29,14 @@ interface AppProps : Props {
     var appState: AppState
 }
 
-// Login Screen
-val LoginScreen = FC<AppProps> { props ->
+
+// Extended LoginProps with callback
+interface LoginProps : AppProps {
+    var onLogin: (UserRole) -> Unit
+}
+
+// Updated LoginScreen with proper props
+val LoginScreen = FC<LoginProps> { props ->
     val viewModel = props.appState.loginViewModel
 
     div {
@@ -76,7 +82,7 @@ val LoginScreen = FC<AppProps> { props ->
                     }
                     input {
                         id = "username"
-                        //type = InputType("text")
+                        asDynamic().type = "text"
                         className = ClassName("form-control")
                         value = viewModel.username
                         onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
@@ -93,7 +99,7 @@ val LoginScreen = FC<AppProps> { props ->
                     }
                     input {
                         id = "password"
-                        //type = "password"
+                        asDynamic().type = "password"
                         className = ClassName("form-control")
                         value = viewModel.password
                         onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
@@ -111,8 +117,7 @@ val LoginScreen = FC<AppProps> { props ->
                         onClick = { _ ->
                             MainScope().launch {
                                 viewModel.login(UserRole.UNIVERSITY) {
-                                    props.appState.currentRole = UserRole.UNIVERSITY
-                                    props.appState.currentScreen = Screen.UNIVERSITY_DASHBOARD
+                                    props.onLogin(UserRole.UNIVERSITY)
                                     // Initialize university dashboard data
                                     props.appState.universityViewModel.loadDegrees("uni-001")
                                 }
@@ -127,8 +132,7 @@ val LoginScreen = FC<AppProps> { props ->
                         onClick = { _ ->
                             MainScope().launch {
                                 viewModel.login(UserRole.EMPLOYER) {
-                                    props.appState.currentRole = UserRole.EMPLOYER
-                                    props.appState.currentScreen = Screen.EMPLOYER_DASHBOARD
+                                    props.onLogin(UserRole.EMPLOYER)
                                     // Initialize employer dashboard data
                                     props.appState.employerViewModel.loadVerificationHistory("emp-123")
                                 }
@@ -143,8 +147,7 @@ val LoginScreen = FC<AppProps> { props ->
                         onClick = { _ ->
                             MainScope().launch {
                                 viewModel.login(UserRole.ADMIN) {
-                                    props.appState.currentRole = UserRole.ADMIN
-                                    props.appState.currentScreen = Screen.ADMIN_DASHBOARD
+                                    props.onLogin(UserRole.ADMIN)
                                     // Initialize admin dashboard data
                                     props.appState.adminViewModel.loadSystemStats()
                                     props.appState.adminViewModel.loadUniversities()
@@ -160,25 +163,33 @@ val LoginScreen = FC<AppProps> { props ->
     }
 }
 
+
+// Dashboard component props with logout callback
+interface DashboardProps : AppProps {
+    var onLogout: () -> Unit
+}
+
+// Updated DashboardLayout props with callback
+interface UpdatedDashboardLayoutProps : Props {
+    var title: String
+    var children: react.ReactNode
+    var onLogout: () -> Unit
+    var username: String
+    var role: UserRole
+}
+
 // University Dashboard Screen
-val UniversityDashboard = FC<AppProps> { props ->
+val UniversityDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.universityViewModel
 
-    div {
+    react.dom.html.ReactHTML.div {
         className = ClassName("dashboard-container")
-        h1 {
-            +"University Dashboard"
-        }
 
         DashboardLayout {
             title = "University Dashboard"
             username = props.appState.loginViewModel.user?.name ?: "User"
             role = UserRole.UNIVERSITY
-            onLogout = {
-                props.appState.loginViewModel.logout()
-                props.appState.currentScreen = Screen.LOGIN
-                props.appState.currentRole = null
-            }
+            onLogout = props.onLogout
 
             div {
                 className = ClassName("dashboard-content")
@@ -314,7 +325,7 @@ val UniversityDashboard = FC<AppProps> { props ->
 }
 
 // Employer Dashboard Screen
-val EmployerDashboard = FC<AppProps> { props ->
+val EmployerDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.employerViewModel
 
     div {
@@ -324,11 +335,7 @@ val EmployerDashboard = FC<AppProps> { props ->
             title = "Employer Dashboard"
             username = props.appState.loginViewModel.user?.name ?: "User"
             role = UserRole.EMPLOYER
-            onLogout = {
-                props.appState.loginViewModel.logout()
-                props.appState.currentScreen = Screen.LOGIN
-                props.appState.currentRole = null
-            }
+            onLogout = props.onLogout
 
             div {
                 className = ClassName("dashboard-content")
@@ -458,7 +465,7 @@ val EmployerDashboard = FC<AppProps> { props ->
 }
 
 // Admin Dashboard Screen
-val AdminDashboard = FC<AppProps> { props ->
+val AdminDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.adminViewModel
 
     div {
@@ -468,11 +475,7 @@ val AdminDashboard = FC<AppProps> { props ->
             title = "Admin Dashboard"
             username = props.appState.loginViewModel.user?.name ?: "User"
             role = UserRole.ADMIN
-            onLogout = {
-                props.appState.loginViewModel.logout()
-                props.appState.currentScreen = Screen.LOGIN
-                props.appState.currentRole = null
-            }
+            onLogout = props.onLogout
 
             div {
                 className = ClassName("dashboard-content")
