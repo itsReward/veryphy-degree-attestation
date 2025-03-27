@@ -1,14 +1,15 @@
 package com.veryphy
 
+import com.veryphy.models.UserRole
 import com.veryphy.screens.AdminDashboard
 import com.veryphy.screens.EmployerDashboard
+import com.veryphy.screens.LoginScreen
 import com.veryphy.screens.UniversityDashboard
 import kotlinx.browser.document
 import kotlinx.browser.window
 import react.*
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML.div
-import screens.LoginScreen
 import web.cssom.ClassName
 import web.dom.Element
 
@@ -48,7 +49,19 @@ val App = FC<Props> {
     }
 
     // Create AppState instance
-    val appState = useState { AppState() }.component1()
+    val appState = useState {
+        val state = AppState()
+        // Initialize properties
+        state.currentScreen = currentScreen
+        state.currentRole = currentRole
+        state
+    }.component1()
+
+    // Update AppState when screen or role changes
+    useEffect(currentScreen, currentRole) {
+        appState.currentScreen = currentScreen
+        appState.currentRole = currentRole
+    }
 
     div {
         className = ClassName("app-container")
@@ -59,6 +72,9 @@ val App = FC<Props> {
                     onLogin = { role ->
                         // Update state with selected role
                         setCurrentRole(role)
+
+                        // Mock login
+                        loginViewModel.user = viewmodels.ViewModelWrapper.getMockUser(role)
 
                         // Navigate to appropriate dashboard
                         setCurrentScreen(
@@ -105,7 +121,7 @@ val App = FC<Props> {
             }
 
             Screen.ADMIN_DASHBOARD -> {
-                AdminDashboard{
+                AdminDashboard {
                     this.appState = appState
                     onLogout = {
                         loginViewModel.logout()
@@ -133,6 +149,7 @@ fun main() {
             }
         } catch (e: Exception) {
             console.error("Error during app initialization:", e)
+            document.getElementById("debug")?.textContent = "Error: ${e.message}"
         }
     }
 }

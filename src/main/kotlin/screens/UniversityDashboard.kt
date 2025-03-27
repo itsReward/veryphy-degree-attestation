@@ -1,8 +1,8 @@
 package com.veryphy.screens
 
 import com.veryphy.DashboardLayout
-import com.veryphy.DegreeStatus
-import com.veryphy.UserRole
+import com.veryphy.models.DegreeStatus
+import com.veryphy.models.UserRole
 import react.FC
 import react.dom.events.ChangeEvent
 import react.dom.events.FormEvent
@@ -13,10 +13,11 @@ import web.html.InputType
 // University Dashboard Screen
 val UniversityDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.universityViewModel
+    val user = props.appState.loginViewModel.user
 
     DashboardLayout {
         title = "University Dashboard"
-        username = props.appState.loginViewModel.user?.name ?: "University User"
+        username = user?.name ?: "University User"
         role = UserRole.UNIVERSITY
         onLogout = props.onLogout
 
@@ -39,7 +40,11 @@ val UniversityDashboard = FC<DashboardProps> { props ->
                 onSubmit = { e: FormEvent<*> ->
                     e.preventDefault()
                     // For demo purposes, only simulate the operation
-                    console.log("Registering degree...")
+                    if (user != null) {
+                        viewModel.registerDegree(user.id, user.name) {
+                            console.log("Degree registered successfully")
+                        }
+                    }
                 }
 
                 ReactHTML.div {
@@ -95,6 +100,7 @@ val UniversityDashboard = FC<DashboardProps> { props ->
 
                 ReactHTML.button {
                     className = ClassName("btn primary-btn")
+                    type = web.html.ButtonType.submit
                     +"Register Degree"
                 }
             }

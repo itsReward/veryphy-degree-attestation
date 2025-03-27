@@ -1,4 +1,4 @@
-package com.veryphy
+package com.veryphy.models
 
 enum class UserRole {
     UNIVERSITY,

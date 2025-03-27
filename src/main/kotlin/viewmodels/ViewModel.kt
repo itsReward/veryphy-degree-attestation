@@ -1,6 +1,6 @@
 package viewmodels
 
-import com.veryphy.ApiService
+import com.veryphy.services.ApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

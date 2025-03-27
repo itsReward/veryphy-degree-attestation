@@ -1,5 +1,6 @@
-package com.veryphy
+package com.veryphy.services
 
+import com.veryphy.models.*
 import kotlinx.coroutines.delay
 
 // Mock API service for frontend development

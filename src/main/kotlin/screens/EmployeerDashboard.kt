@@ -1,8 +1,8 @@
 package com.veryphy.screens
 
 import com.veryphy.DashboardLayout
-import com.veryphy.UserRole
-import com.veryphy.VerificationResult
+import com.veryphy.models.UserRole
+import com.veryphy.models.VerificationResult
 import react.FC
 import react.dom.events.FormEvent
 import react.dom.html.ReactHTML
@@ -12,10 +12,11 @@ import web.html.InputType
 // Employer Dashboard Screen
 val EmployerDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.employerViewModel
+    val user = props.appState.loginViewModel.user
 
     DashboardLayout {
         title = "Employer Dashboard"
-        username = props.appState.loginViewModel.user?.name ?: "Employer User"
+        username = user?.name ?: "Employer User"
         role = UserRole.EMPLOYER
         onLogout = props.onLogout
 
@@ -38,7 +39,9 @@ val EmployerDashboard = FC<DashboardProps> { props ->
                 onSubmit = { e: FormEvent<*> ->
                     e.preventDefault()
                     // For demo purposes, only simulate verification
-                    console.log("Verifying certificate...")
+                    viewModel.verifyDegree { verification ->
+                        console.log("Certificate verified successfully: ${verification.result}")
+                    }
                 }
 
                 ReactHTML.div {
@@ -52,11 +55,16 @@ val EmployerDashboard = FC<DashboardProps> { props ->
                         type = InputType.file
                         className = ClassName("form-control")
                         accept = ".jpg,.jpeg,.png,.pdf"
+                        onChange = { e ->
+                            val input = e.target as web.html.HTMLInputElement
+                            viewModel.handleCertificateUpload(input)
+                        }
                     }
                 }
 
                 ReactHTML.button {
                     className = ClassName("btn primary-btn")
+                    type = web.html.ButtonType.submit
                     +"Verify Certificate"
                 }
             }

@@ -1,6 +1,6 @@
 package viewmodels
 
-import com.veryphy.*
+import com.veryphy.models.*
 
 /**
  * A wrapper for ViewModels to provide mock data loading functionality

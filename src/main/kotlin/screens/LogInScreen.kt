@@ -1,6 +1,6 @@
-package screens
+package com.veryphy.screens
 
-import com.veryphy.UserRole
+import com.veryphy.models.UserRole
 import react.FC
 import react.Props
 import react.dom.html.ReactHTML.button
@@ -10,11 +10,10 @@ import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.input
 import react.dom.html.ReactHTML.label
 import react.dom.html.ReactHTML.p
-import react.dom.html.ReactHTML.style
 import web.cssom.ClassName
 import web.html.InputType
 
-// Simplified version with only the essential props
+// Properly define props with 'external'
 external interface LoginScreenProps : Props {
     var onLogin: (UserRole) -> Unit
 }
@@ -38,7 +37,7 @@ val LoginScreen = FC<LoginScreenProps> { props ->
 
             p {
                 +"Secure verification using blockchain and AI"
-                style("text-align:center;")
+                style = js("""{ textAlign: "center" }""")
             }
 
             form {

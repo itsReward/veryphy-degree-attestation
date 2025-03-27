@@ -1,8 +1,8 @@
 package com.veryphy.screens
 
 import com.veryphy.DashboardLayout
-import com.veryphy.UniversityStatus
-import com.veryphy.UserRole
+import com.veryphy.models.UniversityStatus
+import com.veryphy.models.UserRole
 import react.FC
 import react.dom.events.ChangeEvent
 import react.dom.events.FormEvent
@@ -13,10 +13,11 @@ import web.html.InputType
 // Admin Dashboard Screen
 val AdminDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.adminViewModel
+    val user = props.appState.loginViewModel.user
 
     DashboardLayout {
         title = "Admin Dashboard"
-        username = props.appState.loginViewModel.user?.name ?: "Admin User"
+        username = user?.name ?: "Admin User"
         role = UserRole.ADMIN
         onLogout = props.onLogout
 
@@ -77,8 +78,9 @@ val AdminDashboard = FC<DashboardProps> { props ->
                 className = ClassName("form-group")
                 onSubmit = { e: FormEvent<*> ->
                     e.preventDefault()
-                    // For demo purposes, only simulate university management
-                    console.log("Adding university...")
+                    viewModel.addUniversity {
+                        console.log("University added successfully")
+                    }
                 }
 
                 ReactHTML.div {
@@ -117,6 +119,7 @@ val AdminDashboard = FC<DashboardProps> { props ->
 
                 ReactHTML.button {
                     className = ClassName("btn primary-btn")
+                    type = web.html.ButtonType.submit
                     +"Add University"
                 }
             }
@@ -165,8 +168,18 @@ val AdminDashboard = FC<DashboardProps> { props ->
                                 ReactHTML.td {
                                     ReactHTML.button {
                                         className = ClassName("btn action-btn")
-                                        onClick = { console.log("Manage university: ${university.id}") }
-                                        +"Manage"
+                                        onClick = {
+                                            if (university.status != UniversityStatus.BLACKLISTED) {
+                                                viewModel.blacklistUniversity(university.id) {
+                                                    console.log("University blacklisted: ${university.id}")
+                                                }
+                                            }
+                                        }
+                                        if (university.status != UniversityStatus.BLACKLISTED) {
+                                            +"Blacklist"
+                                        } else {
+                                            +"Blacklisted"
+                                        }
                                     }
                                 }
                             }
