@@ -4,20 +4,18 @@ import com.veryphy.models.UserRole
 import react.FC
 import react.Props
 import react.ReactNode
-import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.header
-import react.dom.html.ReactHTML.h2
-import react.dom.html.ReactHTML.span
-import react.dom.html.ReactHTML.button
-import react.dom.html.ReactHTML.ul
-import react.dom.html.ReactHTML.li
 import react.dom.html.ReactHTML.a
-import react.dom.html.ReactHTML.img
+import react.dom.html.ReactHTML.button
+import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.h2
+import react.dom.html.ReactHTML.header
 import react.dom.html.ReactHTML.i
-import web.cssom.ClassName
+import react.dom.html.ReactHTML.img
+import react.dom.html.ReactHTML.li
+import react.dom.html.ReactHTML.span
+import react.dom.html.ReactHTML.ul
 import react.useState
-import react.useEffect
-import web.window.window
+import web.cssom.ClassName
 
 // Define props interface for dashboard layout
 external interface DashboardLayoutProps : Props {
@@ -34,44 +32,44 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
     val (sidebarCollapsed, setSidebarCollapsed) = useState(false)
 
     // State to track screen size for responsive behavior
-    val (isMobile, setIsMobile) = useState(window.innerWidth < 768)
+    // val (isMobile, setIsMobile) = useState(window.innerWidth < 768)
 
     // Toggle sidebar collapsed state
     val toggleSidebar = {
         setSidebarCollapsed(!sidebarCollapsed)
     }
 
-    // Effect to handle window resize
+    /*// Effect to handle window resize
     useEffect(dependencies = emptyArray()) {
-        // Function that updates the state based on window width
-        fun handleResize() {
+        // Set initial state
+        setIsMobile(window.innerWidth < 768)
+
+        // Use the Kotlin wrapper for setInterval
+        val intervalId = window.setInterval({
             setIsMobile(window.innerWidth < 768)
-        }
-
-        // Run once on mount to set initial state
-        handleResize()
-
-        // Skip event listeners and just poll for window size changes instead
-        val intervalId = js("setInterval(function() { handleResize(); }, 500)")
+        }, 500)
 
         // Return cleanup function
         cleanup {
-            js("clearInterval(intervalId)")
+            window.clearInterval(intervalId)
         }
-    }
+    }   */
 
     div {
         className = ClassName("dashboard-container")
-        style = js("""{ 
+        style = js(
+            """{ 
             display: "flex", 
             flexDirection: "column", 
             height: "100vh", 
             background: "#f5f7fa"
-        }""")
+        }"""
+        )
 
         header {
             className = ClassName("header")
-            style = js("""{ 
+            style = js(
+                """{ 
                 display: "flex", 
                 alignItems: "center", 
                 padding: "0 20px", 
@@ -80,12 +78,14 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
                 color: "white",
                 boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
                 zIndex: "10"
-            }""")
+            }"""
+            )
 
             // Toggle sidebar button
             button {
                 className = ClassName("sidebar-toggle")
-                style = js("""{ 
+                style = js(
+                    """{ 
                     background: "transparent", 
                     border: "none", 
                     color: "white", 
@@ -99,31 +99,36 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
                     justifyContent: "center", 
                     borderRadius: "50%", 
                     transition: "background-color 0.3s"
-                }""")
+                }"""
+                )
                 onClick = { toggleSidebar() }
 
                 // Icon for toggle button based on sidebar state
                 if (sidebarCollapsed) {
                     i {
                         className = ClassName("fas fa-bars")
-                        style = js("""{ 
+                        style = js(
+                            """{ 
                             width: "20px", 
                             height: "20px", 
                             display: "flex", 
                             alignItems: "center", 
                             justifyContent: "center"
-                        }""")
+                        }"""
+                        )
                     }
                 } else {
                     i {
                         className = ClassName("fas fa-times")
-                        style = js("""{ 
+                        style = js(
+                            """{ 
                             width: "20px", 
                             height: "20px", 
                             display: "flex", 
                             alignItems: "center", 
                             justifyContent: "center"
-                        }""")
+                        }"""
+                        )
                     }
                 }
             }
@@ -140,34 +145,41 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
             }
 
             h2 {
-                style = js("""{ 
+                style = js(
+                    """{ 
                     margin: "0", 
                     flexGrow: "1", 
                     fontSize: "18px", 
                     fontWeight: "500" 
-                }""")
+                }"""
+                )
                 +props.title
             }
 
             div {
                 className = ClassName("header-actions")
-                style = js("""{ 
+                style = js(
+                    """{ 
                     display: "flex", 
                     alignItems: "center", 
                     gap: "15px" 
-                }""")
+                }"""
+                )
 
                 span {
-                    style = js("""{ 
+                    style = js(
+                        """{ 
                         fontSize: "14px", 
                         opacity: "0.9" 
-                    }""")
+                    }"""
+                    )
                     +"Welcome, ${props.username}"
                 }
 
                 button {
                     className = ClassName("btn-logout")
-                    style = js("""{ 
+                    style = js(
+                        """{ 
                         padding: "8px 16px", 
                         backgroundColor: "rgba(255, 255, 255, 0.15)", 
                         color: "white", 
@@ -176,7 +188,8 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
                         cursor: "pointer", 
                         fontSize: "14px", 
                         transition: "background-color 0.3s" 
-                    }""")
+                    }"""
+                    )
                     onClick = { props.onLogout() }
                     +"Logout"
                 }
@@ -185,83 +198,90 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
 
         div {
             className = ClassName("dashboard-layout")
-            style = js("""{ 
+            style = js(
+                """{ 
                 display: "flex", 
                 flex: "1", 
                 height: "calc(100vh - 64px)", 
                 overflow: "hidden" 
-            }""")
+            }"""
+            )
 
             // Sidebar with collapsible behavior
             div {
                 className = ClassName(if (sidebarCollapsed) "sidebar collapsed" else "sidebar")
                 style = if (sidebarCollapsed) {
-                    if (isMobile) {
-                        js("""{ 
-                            width: "0", 
-                            overflow: "hidden", 
-                            transition: "width 0.3s ease"
-                        }""")
-                    } else {
-                        js("""{ 
+
+                    js(
+                        """{ 
                             width: "64px", 
                             background: "white", 
                             boxShadow: "2px 0 10px rgba(0, 0, 0, 0.05)", 
                             zIndex: "5", 
                             transition: "width 0.3s ease", 
                             overflow: "hidden"
-                        }""")
-                    }
+                        }"""
+                    )
                 } else {
-                    js("""{ 
+                    js(
+                        """{ 
                         width: "240px", 
                         background: "white", 
                         boxShadow: "2px 0 10px rgba(0, 0, 0, 0.05)", 
                         zIndex: "5", 
                         transition: "width 0.3s ease", 
                         overflow: "hidden"
-                    }""")
+                    }"""
+                    )
                 }
 
                 // Sidebar header
-                if (!sidebarCollapsed || !isMobile) {
+                if (!sidebarCollapsed) {
                     div {
                         style = if (sidebarCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                             padding: "20px 15px", 
                             borderBottom: "1px solid rgba(0, 0, 0, 0.05)", 
                             display: "flex", 
                             alignItems: "center", 
                             justifyContent: "center"  
-                        }""")
+                        }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                             padding: "20px 15px", 
                             borderBottom: "1px solid rgba(0, 0, 0, 0.05)", 
                             display: "flex", 
                             alignItems: "center", 
                             justifyContent: "flex-start" 
-                        }""")
+                        }"""
+                            )
                         }
 
 
                         if (!sidebarCollapsed) {
                             h2 {
-                                style = js("""{ 
+                                style = js(
+                                    """{ 
                                     margin: "0", 
                                     fontSize: "16px", 
                                     fontWeight: "500", 
                                     color: "#0C8B44" 
-                                }""")
+                                }"""
+                                )
                                 +"Navigation"
                             }
                         } else {
                             i {
                                 className = ClassName("fas fa-th-large")
-                                style = js("""{ 
+                                style = js(
+                                    """{ 
                                     color: "#0C8B44", 
                                     fontSize: "20px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
                     }
@@ -277,12 +297,14 @@ val DashboardLayout = FC<DashboardLayoutProps> { props ->
             // Main content area
             div {
                 className = ClassName(if (sidebarCollapsed) "main-content expanded" else "main-content")
-                style = js("""{ 
+                style = js(
+                    """{ 
                     flex: "1", 
                     padding: "20px", 
                     overflow: "auto", 
                     transition: "margin-left 0.3s ease" 
-                }""")
+                }"""
+                )
 
                 +props.children
             }
@@ -300,11 +322,13 @@ external interface SidebarProps : Props {
 val Sidebar = FC<SidebarProps> { props ->
     ul {
         className = ClassName("nav-menu")
-        style = js("""{ 
+        style = js(
+            """{ 
             listStyle: "none", 
             padding: "0", 
             margin: "0" 
-        }""")
+        }"""
+        )
 
         // Dashboard item
         li {
@@ -313,7 +337,8 @@ val Sidebar = FC<SidebarProps> { props ->
                 href = "#"
                 title = "Dashboard"
                 style = if (props.isCollapsed) {
-                    js("""{ 
+                    js(
+                        """{ 
                         display: "flex", 
                         justifyContent: "center", 
                         alignItems: "center", 
@@ -323,9 +348,11 @@ val Sidebar = FC<SidebarProps> { props ->
                         borderRadius: "5px", 
                         margin: "0 8px", 
                         transition: "all 0.3s" 
-                    }""")
+                    }"""
+                    )
                 } else {
-                    js("""{ 
+                    js(
+                        """{ 
                         display: "flex", 
                         alignItems: "center", 
                         padding: "12px 15px", 
@@ -334,23 +361,28 @@ val Sidebar = FC<SidebarProps> { props ->
                         borderRadius: "5px", 
                         margin: "0 8px", 
                         transition: "all 0.3s" 
-                    }""")
+                    }"""
+                    )
                 }
 
                 i {
                     className = ClassName("fas fa-tachometer-alt")
                     style = if (props.isCollapsed) {
-                        js("""{ 
+                        js(
+                            """{ 
                             fontSize: "16px", 
                             width: "20px", 
                             marginRight: "0" 
-                        }""")
+                        }"""
+                        )
                     } else {
-                        js("""{ 
+                        js(
+                            """{ 
                             fontSize: "16px", 
                             width: "20px", 
                             marginRight: "10px" 
-                        }""")
+                        }"""
+                        )
                     }
                 }
 
@@ -371,7 +403,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "Register Degree"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -381,9 +414,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -392,23 +427,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-graduation-cap")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -426,7 +466,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "View Degrees"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -436,9 +477,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -447,23 +490,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-list")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -481,7 +529,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "Account Settings"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -491,9 +540,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -502,23 +553,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-user-cog")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -538,7 +594,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "Verify Degree"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -548,9 +605,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -559,23 +618,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-check-circle")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -593,7 +657,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "Verification History"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -603,9 +668,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -614,23 +681,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-history")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -648,7 +720,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "Account Settings"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -658,9 +731,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -669,23 +744,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-user-cog")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -705,7 +785,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "Universities"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -717,9 +798,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 transition: "all 0.3s",
                                 backgroundColor: "rgba(12, 139, 68, 0.1)",
                                 color: "#0C8B44"
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -730,23 +813,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 transition: "all 0.3s",
                                 backgroundColor: "rgba(12, 139, 68, 0.1)",
                                 color: "#0C8B44"
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-university")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -764,7 +852,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "System Statistics"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -774,9 +863,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -785,23 +876,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-chart-bar")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -819,7 +915,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "User Management"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -829,9 +926,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -840,23 +939,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-users-cog")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
@@ -874,7 +978,8 @@ val Sidebar = FC<SidebarProps> { props ->
                         href = "#"
                         title = "Settings"
                         style = if (props.isCollapsed) {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 justifyContent: "center", 
                                 alignItems: "center", 
@@ -884,9 +989,11 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         } else {
-                            js("""{ 
+                            js(
+                                """{ 
                                 display: "flex", 
                                 alignItems: "center", 
                                 padding: "12px 15px", 
@@ -895,23 +1002,28 @@ val Sidebar = FC<SidebarProps> { props ->
                                 borderRadius: "5px", 
                                 margin: "0 8px", 
                                 transition: "all 0.3s" 
-                            }""")
+                            }"""
+                            )
                         }
 
                         i {
                             className = ClassName("fas fa-cogs")
                             style = if (props.isCollapsed) {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "0" 
-                                }""")
+                                }"""
+                                )
                             } else {
-                                js("""{ 
+                                js(
+                                    """{ 
                                     fontSize: "16px", 
                                     width: "20px", 
                                     marginRight: "10px" 
-                                }""")
+                                }"""
+                                )
                             }
                         }
 
