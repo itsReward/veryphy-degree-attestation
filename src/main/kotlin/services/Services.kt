@@ -4,7 +4,7 @@ import com.veryphy.models.*
 import kotlinx.coroutines.delay
 
 // Mock API service for frontend development
-class ApiService {
+class MockApiService {
     // Authentication
     suspend fun login(username: String, password: String, role: UserRole): Result<User> {
         // Simulate network delay
@@ -193,3 +193,4 @@ class ApiService {
         return Result.success(true)
     }
 }
+

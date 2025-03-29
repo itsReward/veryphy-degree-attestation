@@ -1,12 +1,15 @@
 package com.veryphy.screens
 
+import com.veryphy.AppState
 import com.veryphy.DashboardLayout
 import com.veryphy.models.DegreeStatus
 import com.veryphy.models.UserRole
+import kotlinx.browser.window
 import react.FC
+import react.Props
 import react.dom.events.ChangeEvent
-import react.dom.events.FormEvent
 import react.dom.html.ReactHTML
+import react.useState
 import web.cssom.ClassName
 import web.html.InputType
 
@@ -14,6 +17,13 @@ import web.html.InputType
 val UniversityDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.universityViewModel
     val user = props.appState.loginViewModel.user
+    val demoMode = props.appState.demoMode
+
+    // State for form error message
+    val (formError, setFormError) = useState<String?>(null)
+
+    // State for success message
+    val (successMessage, setSuccessMessage) = useState<String?>(null)
 
     DashboardLayout {
         title = "University Dashboard"
@@ -24,9 +34,33 @@ val UniversityDashboard = FC<DashboardProps> { props ->
         ReactHTML.div {
             className = ClassName("dashboard-content")
 
+            // Show API error if any
             viewModel.errorMessage?.let {
                 ReactHTML.div {
                     className = ClassName("error-message")
+                    +it
+                }
+            }
+
+            // Show form error if any
+            formError?.let {
+                ReactHTML.div {
+                    className = ClassName("error-message")
+                    +it
+                }
+            }
+
+            // Show success message if any
+            successMessage?.let {
+                ReactHTML.div {
+                    className = ClassName("success-message")
+                    style = js("""{ 
+                        padding: "16px", 
+                        backgroundColor: "rgba(40, 167, 69, 0.1)", 
+                        color: "#28a745", 
+                        borderRadius: "4px", 
+                        marginBottom: "16px" 
+                    }""")
                     +it
                 }
             }
@@ -35,17 +69,8 @@ val UniversityDashboard = FC<DashboardProps> { props ->
                 +"Register New Degree"
             }
 
-            ReactHTML.form {
+            ReactHTML.div {
                 className = ClassName("form-group")
-                onSubmit = { e: FormEvent<*> ->
-                    e.preventDefault()
-                    // For demo purposes, only simulate the operation
-                    if (user != null) {
-                        viewModel.registerDegree(user.id, user.name) {
-                            console.log("Degree registered successfully")
-                        }
-                    }
-                }
 
                 ReactHTML.div {
                     className = ClassName("form-group")
@@ -98,10 +123,69 @@ val UniversityDashboard = FC<DashboardProps> { props ->
                     }
                 }
 
+                ReactHTML.div {
+                    className = ClassName("form-group")
+                    ReactHTML.label {
+                        htmlFor = "issueDate"
+                        +"Issue Date"
+                    }
+                    ReactHTML.input {
+                        id = "issueDate"
+                        type = InputType.date
+                        className = ClassName("form-control")
+                        value = viewModel.issueDate
+                        onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
+                            viewModel.issueDate = e.target.value
+                        }
+                    }
+                }
+
                 ReactHTML.button {
                     className = ClassName("btn primary-btn")
-                    type = web.html.ButtonType.submit
-                    +"Register Degree"
+                    type = web.html.ButtonType.button
+                    disabled = viewModel.isLoading
+                    onClick = {
+                        // Validate form
+                        if (viewModel.studentId.isBlank() || viewModel.studentName.isBlank() || viewModel.degreeName.isBlank()) {
+                            setFormError("Student ID, name, and degree name are required")
+                        }
+
+                        setFormError(null)
+
+                        // For demo purposes or real API
+                        if (demoMode) {
+                            viewModel.demoRegisterDegree(user?.id ?: "uni-001", user?.name ?: "University of Technology") {
+                                setSuccessMessage("Degree registered successfully!")
+
+                                // Clear success message after 3 seconds
+                                window.setTimeout({
+                                    setSuccessMessage(null)
+                                }, 3000)
+                            }
+                        } else {
+                            // Use real API
+                            viewModel.registerDegree(
+                                user?.id ?: "",
+                                onSuccess = {
+                                    setSuccessMessage("Degree registered successfully!")
+
+                                    // Clear success message after 3 seconds
+                                    window.setTimeout({
+                                        setSuccessMessage(null)
+                                    }, 3000)
+                                },
+                                onError = { errorMessage ->
+                                    setFormError(errorMessage)
+                                }
+                            )
+                        }
+                    }
+
+                    if (viewModel.isLoading) {
+                        +"Registering..."
+                    } else {
+                        +"Register Degree"
+                    }
                 }
             }
 
@@ -128,6 +212,9 @@ val UniversityDashboard = FC<DashboardProps> { props ->
                             ReactHTML.th { +"Degree" }
                             ReactHTML.th { +"Issue Date" }
                             ReactHTML.th { +"Status" }
+                            if (!demoMode) {
+                                ReactHTML.th { +"Hash" }
+                            }
                         }
                     }
                     ReactHTML.tbody {
@@ -147,6 +234,38 @@ val UniversityDashboard = FC<DashboardProps> { props ->
                                         +degree.status.name
                                     }
                                 }
+                                if (!demoMode) {
+                                    ReactHTML.td {
+                                        "${ +degree.degreeHash.take(10) } " + "..."
+                                        title = degree.degreeHash
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Load more button if there are more degrees
+                if (viewModel.hasMoreDegrees) {
+                    ReactHTML.div {
+                        className = ClassName("load-more")
+                        style = js("""{ textAlign: "center", marginTop: "20px" }""")
+
+                        ReactHTML.button {
+                            className = ClassName("btn")
+                            onClick = {
+                                if (demoMode) {
+                                    viewModel.demoLoadDegrees()
+                                } else {
+                                    viewModel.loadDegrees(user?.id ?: "", false)
+                                }
+                            }
+                            disabled = viewModel.isLoading
+
+                            if (viewModel.isLoading) {
+                                +"Loading..."
+                            } else {
+                                +"Load More"
                             }
                         }
                     }

@@ -1,12 +1,14 @@
 package com.veryphy.screens
 
+import com.veryphy.AppState
 import com.veryphy.DashboardLayout
 import com.veryphy.models.UniversityStatus
 import com.veryphy.models.UserRole
+import kotlinx.browser.window
 import react.FC
 import react.dom.events.ChangeEvent
-import react.dom.events.FormEvent
 import react.dom.html.ReactHTML
+import react.useState
 import web.cssom.ClassName
 import web.html.InputType
 
@@ -14,6 +16,13 @@ import web.html.InputType
 val AdminDashboard = FC<DashboardProps> { props ->
     val viewModel = props.appState.adminViewModel
     val user = props.appState.loginViewModel.user
+    val demoMode = props.appState.demoMode
+
+    // State for form error message
+    val (formError, setFormError) = useState<String?>(null)
+
+    // State for success message
+    val (successMessage, setSuccessMessage) = useState<String?>(null)
 
     DashboardLayout {
         title = "Admin Dashboard"
@@ -24,9 +33,33 @@ val AdminDashboard = FC<DashboardProps> { props ->
         ReactHTML.div {
             className = ClassName("dashboard-content")
 
+            // Show API error if any
             viewModel.errorMessage?.let {
                 ReactHTML.div {
                     className = ClassName("error-message")
+                    +it
+                }
+            }
+
+            // Show form error if any
+            formError?.let {
+                ReactHTML.div {
+                    className = ClassName("error-message")
+                    +it
+                }
+            }
+
+            // Show success message if any
+            successMessage?.let {
+                ReactHTML.div {
+                    className = ClassName("success-message")
+                    style = js("""{ 
+                        padding: "16px", 
+                        backgroundColor: "rgba(40, 167, 69, 0.1)", 
+                        color: "#28a745", 
+                        borderRadius: "4px", 
+                        marginBottom: "16px" 
+                    }""")
                     +it
                 }
             }
@@ -35,7 +68,7 @@ val AdminDashboard = FC<DashboardProps> { props ->
                 +"System Statistics"
             }
 
-            if (viewModel.isLoading) {
+            if (viewModel.isLoading && viewModel.systemStats == null) {
                 ReactHTML.div {
                     className = ClassName("loading-indicator")
                     +"Loading statistics..."
@@ -46,42 +79,41 @@ val AdminDashboard = FC<DashboardProps> { props ->
 
                     ReactHTML.div {
                         className = ClassName("stat-card")
-                        ReactHTML.h2 { +"Universities" }
+                        ReactHTML.h3 { +"Universities" }
                         ReactHTML.p { className = ClassName("stat-value"); +"${viewModel.systemStats?.registeredUniversities ?: 0}" }
                     }
 
                     ReactHTML.div {
                         className = ClassName("stat-card")
-                        ReactHTML.h2 { +"Total Degrees" }
+                        ReactHTML.h3 { +"Total Degrees" }
                         ReactHTML.p { className = ClassName("stat-value"); +"${viewModel.systemStats?.totalDegrees ?: 0}" }
                     }
 
                     ReactHTML.div {
                         className = ClassName("stat-card")
-                        ReactHTML.h2 { +"Verifications" }
+                        ReactHTML.h3 { +"Verifications" }
                         ReactHTML.p { className = ClassName("stat-value"); +"${viewModel.systemStats?.verificationCount ?: 0}" }
                     }
 
                     ReactHTML.div {
                         className = ClassName("stat-card")
-                        ReactHTML.h2 { +"Success Rate" }
-                        ReactHTML.p { className = ClassName("stat-value"); +"${viewModel.systemStats?.successRate ?: 0}%" }
+                        ReactHTML.h3 { +"Success Rate" }
+                        ReactHTML.p {
+                            className = ClassName("stat-value")
+                            val successRate = viewModel.systemStats?.successRate ?: 0.0
+                            val formattedRate = (successRate * 10).toInt() / 10.0 // Round to 1 decimal place
+                            +"$formattedRate%"
+                        }
                     }
                 }
             }
 
             ReactHTML.h2 {
-                +"Manage Universities"
+                +"Register New University"
             }
 
-            ReactHTML.form {
+            ReactHTML.div {
                 className = ClassName("form-group")
-                onSubmit = { e: FormEvent<*> ->
-                    e.preventDefault()
-                    viewModel.addUniversity {
-                        console.log("University added successfully")
-                    }
-                }
 
                 ReactHTML.div {
                     className = ClassName("form-group")
@@ -117,10 +149,86 @@ val AdminDashboard = FC<DashboardProps> { props ->
                     }
                 }
 
+                ReactHTML.div {
+                    className = ClassName("form-group")
+                    ReactHTML.label {
+                        htmlFor = "universityAddress"
+                        +"Address (Optional)"
+                    }
+                    ReactHTML.input {
+                        id = "universityAddress"
+                        type = InputType.text
+                        className = ClassName("form-control")
+                        value = viewModel.universityAddress
+                        onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
+                            viewModel.universityAddress = e.target.value
+                        }
+                    }
+                }
+
+                ReactHTML.div {
+                    className = ClassName("form-group")
+                    ReactHTML.label {
+                        htmlFor = "stakeAmount"
+                        +"Stake Amount"
+                    }
+                    ReactHTML.input {
+                        id = "stakeAmount"
+                        type = InputType.number
+                        min = "1000"
+                        step = 100.0
+                        className = ClassName("form-control")
+                        value = viewModel.stakeAmount
+                        onChange = { e: ChangeEvent<web.html.HTMLInputElement> ->
+                            viewModel.stakeAmount = e.target.value
+                        }
+                    }
+                }
+
                 ReactHTML.button {
                     className = ClassName("btn primary-btn")
-                    type = web.html.ButtonType.submit
-                    +"Add University"
+                    type = web.html.ButtonType.button
+                    disabled = viewModel.isLoading
+                    onClick = {
+                        if (viewModel.universityName.isBlank() || viewModel.universityEmail.isBlank()) {
+                            setFormError("University name and email are required")
+                           // return@onClick
+                        }
+
+                        setFormError(null)
+
+                        // For demo purposes or real API
+                        if (demoMode) {
+                            viewModel.demoAddUniversity {
+                                setSuccessMessage("University added successfully!")
+
+                                // Clear success message after 3 seconds
+                                window.setTimeout({
+                                    setSuccessMessage(null)
+                                }, 3000)
+                            }
+                        } else {
+                            viewModel.addUniversity(
+                                onSuccess = {
+                                    setSuccessMessage("University added successfully!")
+
+                                    // Clear success message after 3 seconds
+                                    window.setTimeout({
+                                        setSuccessMessage(null)
+                                    }, 3000)
+                                },
+                                onError = { errorMessage ->
+                                    setFormError(errorMessage)
+                                }
+                            )
+                        }
+                    }
+
+                    if (viewModel.isLoading) {
+                        +"Adding..."
+                    } else {
+                        +"Add University"
+                    }
                 }
             }
 
@@ -128,7 +236,7 @@ val AdminDashboard = FC<DashboardProps> { props ->
                 +"Registered Universities"
             }
 
-            if (viewModel.isLoading) {
+            if (viewModel.isLoading && viewModel.universities.isEmpty()) {
                 ReactHTML.div {
                     className = ClassName("loading-indicator")
                     +"Loading universities..."
@@ -146,6 +254,7 @@ val AdminDashboard = FC<DashboardProps> { props ->
                             ReactHTML.th { +"Name" }
                             ReactHTML.th { +"Email" }
                             ReactHTML.th { +"Status" }
+                            ReactHTML.th { +"Join Date" }
                             ReactHTML.th { +"Actions" }
                         }
                     }
@@ -165,23 +274,88 @@ val AdminDashboard = FC<DashboardProps> { props ->
                                         +university.status.name
                                     }
                                 }
+                                ReactHTML.td { +university.joinDate }
                                 ReactHTML.td {
                                     ReactHTML.button {
                                         className = ClassName("btn action-btn")
+                                        style = if (university.status == UniversityStatus.BLACKLISTED) {
+                                            js("""{ 
+                                                backgroundColor: "#6c757d", 
+                                                color: "white",
+                                                padding: "4px 8px",
+                                                fontSize: "12px"
+                                            }""")
+                                        } else {
+                                            js("""{ 
+                                                backgroundColor: "#dc3545", 
+                                                color: "white",
+                                                padding: "4px 8px",
+                                                fontSize: "12px"
+                                            }""")
+                                        }
+                                        disabled = university.status == UniversityStatus.BLACKLISTED || viewModel.isLoading
                                         onClick = {
                                             if (university.status != UniversityStatus.BLACKLISTED) {
-                                                viewModel.blacklistUniversity(university.id) {
-                                                    console.log("University blacklisted: ${university.id}")
+                                                if (demoMode) {
+                                                    viewModel.demoBlacklistUniversity(university.id) {
+                                                        setSuccessMessage("University blacklisted successfully")
+
+                                                        // Clear success message after 3 seconds
+                                                        window.setTimeout({
+                                                            setSuccessMessage(null)
+                                                        }, 3000)
+                                                    }
+                                                } else {
+                                                    viewModel.blacklistUniversity(
+                                                        university.id,
+                                                        onSuccess = {
+                                                            setSuccessMessage("University blacklisted successfully")
+
+                                                            // Clear success message after 3 seconds
+                                                            window.setTimeout({
+                                                                setSuccessMessage(null)
+                                                            }, 3000)
+                                                        },
+                                                        onError = { errorMessage ->
+                                                            setFormError(errorMessage)
+                                                        }
+                                                    )
                                                 }
                                             }
                                         }
-                                        if (university.status != UniversityStatus.BLACKLISTED) {
-                                            +"Blacklist"
-                                        } else {
+                                        if (university.status == UniversityStatus.BLACKLISTED) {
                                             +"Blacklisted"
+                                        } else {
+                                            +"Blacklist"
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+
+                // Load more button if there are more universities
+                if (viewModel.hasMoreUniversities) {
+                    ReactHTML.div {
+                        className = ClassName("load-more")
+                        style = js("""{ textAlign: "center", marginTop: "20px" }""")
+
+                        ReactHTML.button {
+                            className = ClassName("btn")
+                            onClick = {
+                                if (demoMode) {
+                                    viewModel.demoLoadUniversities()
+                                } else {
+                                    viewModel.loadUniversities(false)
+                                }
+                            }
+                            disabled = viewModel.isLoading
+
+                            if (viewModel.isLoading) {
+                                +"Loading..."
+                            } else {
+                                +"Load More"
                             }
                         }
                     }
